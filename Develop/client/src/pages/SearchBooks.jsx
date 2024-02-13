@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import { ADD_BOOK } from '../utils/mutations';
+
+
 import {
   Container,
   Col,
@@ -13,6 +17,10 @@ import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
+
+  const [addBook, { error }] = useMutation(ADD_BOOK);
+
+
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
@@ -30,8 +38,7 @@ const SearchBooks = () => {
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
-    if (!searchInput) {
+if (!searchInput) {
       return false;
     }
 
@@ -59,32 +66,66 @@ const SearchBooks = () => {
     }
   };
 
+
+
+
+
+
+
   // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
-    // find the book in `searchedBooks` state by the matching id
-    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
-    // get token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-    if (!token) {
-      return false;
-    }
+    event.preventDefault();
 
     try {
-      const response = await saveBook(bookToSave, token);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      const { data } = await addBook({
+        variables: {
+          bookId,
+        },
+     
+      });
+      console.log(data)
+   
     } catch (err) {
       console.error(err);
     }
   };
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name === 'thoughtText' && value.length <= 280) {
+      setThoughtText(value);
+      setCharacterCount(value.length);
+    }
+
+
+
+    // // find the book in `searchedBooks` state by the matching id
+    // const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+
+    // // get token
+    // const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    // if (!token) {
+    //   return false;
+    // }
+
+    // try {
+    //   const response = await saveBook(bookToSave, token);
+
+    //   if (!response.ok) {
+    //     throw new Error('something went wrong!');
+    //   }
+
+    //   // if book successfully saves to user's account, save book id to state
+    //   setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+    // } catch (err) {
+    //   console.error(err);
+    // }
+  };
+
+  console.log(context.user)
   return (
     <>
       <div className="text-light bg-dark p-5">
