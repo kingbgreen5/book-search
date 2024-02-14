@@ -74,35 +74,21 @@ if (!searchInput) {
   const handleSaveBook = async (bookId,title,authors,description,image) => {
   
     event.preventDefault();
-    // try {
-    //   const { data } = await saveBook({
-    //     variables: {
-    //       bookId,
-    //     },
-     
-    //   });
 
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
     console.log(bookToSave)
-    // console.log(context)
-   
     try {
 
-      const { data } = 
       await saveBook({
         variables: {
-            // title: bookToSave.title,
+            title: bookToSave.title,
             bookId:bookToSave.bookId,
-            // authors: bookToSave.authors,
-            // description: bookToSave.description,
-            // image: bookToSave.image,
-            // link: bookToSave.link
-          }
+            authors: bookToSave.authors,
+            description: bookToSave.description,
+            image: bookToSave.image,
+            link: bookToSave.link}
       }
-      )      ;
-
-
-
+      );
     } catch (err) {
       console.error(err);
     }
