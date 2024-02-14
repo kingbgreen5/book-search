@@ -12,7 +12,7 @@ const resolvers = {
     // },
     // By adding context to our query, we can retrieve the logged in user without specifically searching for them
     me: async (parent, args, context) => {
-      console.log(context)
+      // console.log(context)
       if (context.user) {
         return User.findOne({ _id: context.user._id });
       }
@@ -42,30 +42,26 @@ const resolvers = {
     },
 
 
-    saveBook: async (parent, { userId, input }, context) => {
+    saveBook: async (parent, { bookId, authors, description, title, image }, context) => {
       // Check if the user is authenitcated
       if (!context.user) {
         throw new Error('User is not authenticated');
-        return context
       }
       
       try {
         // Find the user by ID
-        const user = await User.findById(context.user._id);
-            console.log(context.user)
-
-        if (!user) {
-          throw new Error('User not found');
-        }
-
-        // Add the book to the user's savedBooks array
-        user.savedBooks.push(input);
-
-        // Save the updated user object
-        const updatedUser = await user.save();
-
-        // Return the updated user object
-        return updatedUser;
+        return User.findOneAndUpdate(
+          { _id: context.user._id },
+          {
+            $addToSet: {
+              savedBooks: { bookId },
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
       } catch (error) {
         console.error('Error saving book:', error);
         throw new Error('Failed to save book');
@@ -75,7 +71,21 @@ const resolvers = {
   
 
 
+        // const user = await User.findById(context.user._id);
+        //     console.log(context.user)
 
+        // if (!user) {
+        //   throw new Error('User not found');
+        // }
+
+        // // Add the book to the user's savedBooks array
+        // user.savedBooks.push(input);
+
+        // // Save the updated user object
+        // const updatedUser = await user.save();
+
+        // // Return the updated user object
+        // return updatedUser;
 
 
 

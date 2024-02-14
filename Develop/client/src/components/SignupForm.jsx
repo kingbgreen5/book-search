@@ -1,20 +1,14 @@
 import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+import { useMutation } from '@apollo/client';
+import { ADD_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
 
-
-import { useMutation } from '@apollo/client';
-import { ADD_PROFILE } from '../utils/mutations';
-
-
 const SignupForm = () => {
-  // set initial form state
+  const [addUser, { error, data }] = useMutation(ADD_USER);
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
-  // set state for form validation
   const [validated] = useState(false);
-  // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
   const handleInputChange = (event) => {
@@ -24,29 +18,15 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
-    // check if form has everything (as per react-bootstrap docs)
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
+    console.log(userFormData);
     try {
-      const response = await createUser(userFormData);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
+      const { data } = await addUser({
+        variables: { ...userFormData },
+      });
+      Auth.login(data.addUser.token);
+    } catch (e) {
+      console.error(e);
     }
-
     setUserFormData({
       username: '',
       email: '',
@@ -111,176 +91,6 @@ const SignupForm = () => {
     </>
   );
 };
-
-
-
-
-
-
-
-
-
-// import { useState } from 'react';
-// import { Link } from 'react-router-dom';
-
-// import { useMutation } from '@apollo/client';
-// import { ADD_PROFILE } from '../utils/mutations';
-
-// import Auth from '../utils/auth';
-
-// const SignupForm = () => {
-//   const [formState, setFormState] = useState({
-//     name: '',
-//     email: '',
-//     password: '',
-//   });
-//   const [addProfile, { error, data }] = useMutation(ADD_PROFILE);
-
-//   // update state based on form input changes
-//   const handleChange = (event) => {
-//     const { name, value } = event.target;
-
-//     setFormState({
-//       ...formState,
-//       [name]: value,
-//     });
-//   };
-
-//   // submit form
-//   const handleFormSubmit = async (event) => {
-//     event.preventDefault();
-//     console.log(formState);
-
-//     try {
-//       const { data } = await addProfile({
-//         variables: { ...formState },
-//       });
-
-//       Auth.login(data.addProfile.token);
-//     } catch (e) {
-//       console.error(e);
-//     }
-//   };
-
-//   return (
-//     <main className="flex-row justify-center mb-4">
-//       <div className="col-12 col-lg-10">
-//         <div className="card">
-//           <h4 className="card-header bg-dark text-light p-2">Sign Up</h4>
-//           <div className="card-body">
-//             {data ? (
-//               <p>
-//                 Success! You may now head{' '}
-//                 <Link to="/">back to the homepage.</Link>
-//               </p>
-//             ) : (
-//               <form onSubmit={handleFormSubmit}>
-//                 <input
-//                   className="form-input"
-//                   placeholder="Your username"
-//                   name="name"
-//                   type="text"
-//                   value={formState.name}
-//                   onChange={handleChange}
-//                 />
-//                 <input
-//                   className="form-input"
-//                   placeholder="Your email"
-//                   name="email"
-//                   type="email"
-//                   value={formState.email}
-//                   onChange={handleChange}
-//                 />
-//                 <input
-//                   className="form-input"
-//                   placeholder="******"
-//                   name="password"
-//                   type="password"
-//                   value={formState.password}
-//                   onChange={handleChange}
-//                 />
-//                 <button
-//                   className="btn btn-block btn-info"
-//                   style={{ cursor: 'pointer' }}
-//                   type="submit"
-//                 >
-//                   Submit
-//                 </button>
-//               </form>
-//             )}
-
-//             {error && (
-//               <div className="my-3 p-3 bg-danger text-white">
-//                 {error.message}
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-//     </main>
-//   );
-// };
-
-
-
-
-
-
-  // const SignupForm = () => {
-  //   const [formState, setFormState] = useState({
-  //     name: '',
-  //     email: '',
-  //     password: '',
-  //   });
-  //   const [addProfile, { error, data }] = useMutation(ADD_PROFILE);
-  
-  //   // update state based on form input changes
-  //   const handleChange = (event) => {
-  //     const { name, value } = event.target;
-  
-  //     setFormState({
-  //       ...formState,
-  //       [name]: value,
-  //     });
-  //   };
-  
-  //   // submit form
-  //   const handleFormSubmit = async (event) => {
-  //     event.preventDefault();
-  //     console.log(formState);
-  
-  //     try {
-  //       const { data } = await addProfile({
-  //         variables: { ...formState },
-  //       });
-  
-  //       Auth.login(data.addProfile.token);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   };
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,8 +1,7 @@
 // see SignupForm.js for comments
 import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { loginUser } from '../utils/API';
+
 import { LOGIN_USER } from '../utils/mutations';
 import { useMutation } from '@apollo/client';
 import Auth from '../utils/auth';
@@ -10,25 +9,11 @@ import Auth from '../utils/auth';
 
 
 const LoginForm = (props) => {
-
   const [login, { error, data }] = useMutation(LOGIN_USER);
-
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
-
-
-
-  // // update state based on form input changes
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-
-  //   setFormState({
-  //     ...formState,
-  //     [name]: value,
-  //   });
-  // };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -97,45 +82,3 @@ const LoginForm = (props) => {
 
 export default LoginForm;
 
-
-// const LoginForm = () => {
-//   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
-//   const [validated] = useState(false);
-//   const [showAlert, setShowAlert] = useState(false);
-
-//   const handleInputChange = (event) => {
-//     const { name, value } = event.target;
-//     setUserFormData({ ...userFormData, [name]: value });
-//   };
-
-//   const handleFormSubmit = async (event) => {
-//     event.preventDefault();
-
-//     // check if form has everything (as per react-bootstrap docs)
-//     const form = event.currentTarget;
-//     if (form.checkValidity() === false) {
-//       event.preventDefault();
-//       event.stopPropagation();
-//     }
-
-//     try {
-//       const response = await loginUser(userFormData);
-
-//       if (!response.ok) {
-//         throw new Error('something went wrong!');
-//       }
-
-//       const { token, user } = await response.json();
-//       console.log(user);
-//       Auth.login(token);
-//     } catch (err) {
-//       console.error(err);
-//       setShowAlert(true);
-//     }
-
-//     setUserFormData({
-//       username: '',
-//       email: '',
-//       password: '',
-//     });
-//   };
