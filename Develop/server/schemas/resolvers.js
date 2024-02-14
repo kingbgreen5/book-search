@@ -12,7 +12,7 @@ const resolvers = {
     // },
     // By adding context to our query, we can retrieve the logged in user without specifically searching for them
     me: async (parent, args, context) => {
-      console.log(context)
+      // console.log(context)
       if (context.user) {
         return User.findOne({ _id: context.user._id });
       }
@@ -42,11 +42,11 @@ const resolvers = {
     },
 
 
-    saveBook: async (parent, { bookId }, context) => {
+    saveBook: async (parent, { bookId, authors, description, title, image }, context) => {
       // Check if the user is authenitcated
-      // if (!context.user) {
-      //   throw new Error('User is not authenticated');
-      // }
+      if (!context.user) {
+        throw new Error('User is not authenticated');
+      }
       
       try {
         // Find the user by ID
