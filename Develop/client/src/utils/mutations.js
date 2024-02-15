@@ -32,4 +32,19 @@ mutation saveBook($bookId: String!, $authors: [String], $description: String, $t
       link
     }
   }
-}`
+}`;
+
+
+export const DELETE_BOOK = gql`
+mutation saveBook($bookId: String!, $authors: [String], $description: String, $title: String, $image: String, $link: String) {
+  saveBook(bookId: $bookId, authors: $authors, description: $description, title: $title, image: $image, link: $link) {
+    savedBooks {
+      bookId
+      authors
+      description
+      title
+      image
+      link
+    }
+  }
+}`;
