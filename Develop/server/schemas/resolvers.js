@@ -42,7 +42,7 @@ const resolvers = {
     },
 
 
-    saveBook: async (parent, { bookId, authors, description, title, image }, context) => {
+    saveBook: async (parent, { bookId, authors, description, title, image, link }, context) => {
       // Check if the user is authenitcated
       if (!context.user) {
         throw new Error('User is not authenticated');
@@ -54,7 +54,7 @@ const resolvers = {
           { _id: context.user._id },
           {
             $addToSet: {
-              savedBooks: { bookId },
+              savedBooks: { bookId, authors, description, title, image, link},
             },
           },
           {

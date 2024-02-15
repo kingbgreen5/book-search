@@ -71,7 +71,7 @@ if (!searchInput) {
 
 
   // create function to handle saving a book to our database
-  const handleSaveBook = async (bookId,title,authors,description,image) => {
+  const handleSaveBook = async (bookId,title,authors,description,image,link) => {
   
     event.preventDefault();
 
@@ -86,7 +86,8 @@ if (!searchInput) {
             authors: bookToSave.authors,
             description: bookToSave.description,
             image: bookToSave.image,
-            link: bookToSave.link}
+            link: bookToSave.link
+          }
       }
       );
     } catch (err) {
