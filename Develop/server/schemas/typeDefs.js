@@ -11,6 +11,7 @@ type Mutation {
   removeBook(bookId: String!): User
 }
 
+
   type User {
     _id: ID!
     username: String!
