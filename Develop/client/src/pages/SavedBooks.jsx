@@ -1,24 +1,3 @@
-// import { useQuery } from "@apollo/client";
-// import { GET_ME } from '../utils/queries.js'
-
-
-
-// const SavedBooks = () => {
-// const {loading,error, data} = useQuery(GET_ME);
-
-
-// return(
-// <main>
-// <div>
-
-// </div>
-
-// </main>
-
-// )
-// }
-
-
 
 import {
   Container,
@@ -34,20 +13,28 @@ import Auth from '../utils/auth';
 import { useMutation } from '@apollo/client';
 import { useQuery } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
+import { REMOVE_BOOK } from '../utils/mutations'; // 
+
+
+
 
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
-  const { loading,error, data } = useQuery(GET_ME);
+  const { loading, data, refetch } = useQuery(GET_ME);
   const userDataLength = Object.keys(userData).length;
+const [removeBook] = useMutation(REMOVE_BOOK);
   // console.log(data.me)
 
+  // Display User Data
   useEffect(() => {
    const getUserData = async () => {
       try {
 if (!data){
   return;
 }
+
+
 setUserData(data.me);
 } catch (err) {
   console.error(err);
@@ -56,50 +43,75 @@ getUserData();
   },[data])
 
 
-  //      setUserData(data.me);
-        
-  //       const token = Auth.loggedIn() ? Auth.getToken() : null;
-  //       if (!token) {
-  //         return false;
-  //       }
-  //       const response = await getMe(token);
-  //       if (!response.ok) {
-  //         throw new Error('something went wrong!');
-  //       }
-  //         setUserData(data.me);               
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
-  //   getUserData();
-  // }, [userDataLength]);
+  useEffect(() => {
+    refetch(); // Trigger refetch on initial render
+  }, [refetch]);
+
+
+
+
+
+
+
 
   const handleDeleteBook = async (bookId) => {
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-    if (!token) {
-      return false;
-    }
-
     try {
-      const response = await deleteBook(bookId, token);
-      console.log(bookId)
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      const { data } = await removeBook({
+        variables: { bookId }
+      });
 
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
-      // upon success, remove book's id from localStorage
+      // Update the user data in state after the book is removed
+      setUserData(data.removeBook);
+
+      // Upon success, you can perform any additional actions like removing the book's ID from localStorage
       removeBookId(bookId);
     } catch (err) {
       console.error(err);
     }
   };
 
+
+
+
+
+
+  
+
+  // const handleDeleteBook = async (bookId) => {
+  //   const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+  //   if (!token) {
+  //     return false;
+  //   }
+
+  //   try {
+  //     const response = await deleteBook(bookId, token);
+  //     console.log(bookId)
+  //     if (!response.ok) {
+  //       throw new Error('something went wrong!');
+  //     }
+
+  //     const updatedUser = await response.json();
+  //     setUserData(updatedUser);
+  //     // upon success, remove book's id from localStorage
+  //     removeBookId(bookId);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
   if (!userDataLength) {
     return <h2>LOADING...</h2>;
   }
+
+
+
+
+
+
+
+
+
 
   return (
     <>

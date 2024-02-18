@@ -94,6 +94,33 @@ const resolvers = {
 
 
 
+          removeBook: async (_, { bookId }, context) => {
+            if (!context.user) {
+              throw new AuthenticationError('You need to be logged in to perform this action');
+            }
+      
+            try {
+        
+              const user = await User.findById(context.user._id);
+      
+              if (!user) {
+                throw new Error('User not found');
+              }
+      
+          
+              user.savedBooks = user.savedBooks.filter(book => book.bookId !== bookId);
+      
+              // Save the updated user object
+              await user.save();
+      
+              // Return the updated user
+              return user;
+            } catch (error) {
+              throw new Error(`Failed to remove book: ${error.message}`);
+            }
+          },
+        },
+      };
 
 
 
@@ -105,18 +132,18 @@ const resolvers = {
 
 
 
-    // Make it so a logged in user can only remove a skill from their own profile
-    removeBook: async (parent, { skill }, context) => {
-      if (context.user) {
-        return User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $pull: { savedBooks: book } },
-          { new: true }
-        );
-      }
-      throw AuthenticationError;
-    },
-  }};
+  //   // Make it so a logged in user can only remove a skill from their own profile
+  //   removeBook: async (parent, { book }, context) => {
+  //     if (context.user) {
+  //       return User.findOneAndUpdate(
+  //         { _id: context.user._id },
+  //         { $pull: { savedBooks: book } },
+  //         { new: true }
+  //       );
+  //     }
+  //     throw AuthenticationError;
+  //   },
+  // }};
 
 module.exports = resolvers;
 
