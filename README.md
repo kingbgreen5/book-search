@@ -24,7 +24,7 @@ https://book-search-f8lp.onrender.com/
 =======
 
 ## Credits
-Starter code heavily used and provided by Bootcamp lessons.
+Starter code heavily used and provided by Bootcamp lessons. ChatGPT consulted especially for error message handling.
  
 
 ## License
